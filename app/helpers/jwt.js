@@ -1,9 +1,8 @@
 const expressJwt = require('express-jwt');
-const config = require('config.json');
 
 
 jwt = () => {
-    const { secret } = config;
+    const { secret } = process.env.SECRET;
     return expressJwt({ secret, algorithms: ['HS256'] }).unless({
         path: [
             // public routes that don't require authentication
