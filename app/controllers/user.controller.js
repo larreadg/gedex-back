@@ -1,4 +1,7 @@
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
+const Usuario = require('app/models/User');
+const Rol = require('app/models/Rol');
 
 const users = [{ id: 1, username: 'test', password: 'test', firstName: 'Test', lastName: 'User' }];
 
@@ -14,8 +17,18 @@ login = (req, res) => {
     });
 }
 
-register = (req, res) => {
-    res.send({ 'test': 'test' });
+register = async(req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const rol = await Rol.findOne({ where: { nombre: 'AGENT' } });
+    const user = await Usuario.create({...req.body, rolId: rol.id });
+
+    res.json({ "estado": 0, "usuario": user.toJSON() });
+
 }
 
 omitPassword = (user) => {

@@ -16,7 +16,7 @@ app.use(cors());
 app.use(jwt());
 
 // Rutas
-const authRoutes = require('./app/routes/auth.routes');
+const authRoutes = require('./app/routes/user.routes');
 
 
 // Middleware
