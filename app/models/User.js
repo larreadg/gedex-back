@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('config/db');
-const md5 = require('md5');
+const shajs = require('sha.js')
 
 class Usuario extends Model {
     obtenerNombre() {
@@ -50,7 +50,7 @@ Usuario.init({
         type: DataTypes.STRING,
         allowNull: false,
         set(value) {
-            this.setDataValue('clave', md5(value));
+            this.setDataValue('clave', shajs('sha256').update(value).digest('hex'));
         }
     },
     usuario: {
