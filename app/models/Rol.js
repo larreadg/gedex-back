@@ -11,7 +11,7 @@ Rol.init({
     }
 }, {
     sequelize,
-    tableName: 'Roles',
+    tableName: 'Rol',
     modelName: 'rol'
 })
 

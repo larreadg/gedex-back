@@ -4,19 +4,36 @@ const { validationResult } = require('express-validator');
 const Usuario = require('app/models/User');
 const Rol = require('app/models/Rol');
 const Response = require('app/helpers/response');
+const shajs = require('sha.js');
 
-const users = [{ id: 1, username: 'test', password: 'test', firstName: 'Test', lastName: 'User' }];
+login = async(req, res) => {
 
-login = (req, res) => {
+    try {
+        const { usuario, clave } = req.body;
+        const pwHash = shajs('sha256').update(clave).digest('hex');
+        const user = await Usuario.findOne({
+            where: {
+                [Op.and]: [{ usuario: usuario }, { clave: pwHash }, { activo: true }]
+            },
+            attributes: ['usuario', 'nombres', 'apellidos', 'documento'],
+            include: Rol
+        });
 
-    const { username, password } = req.body;
-    const user = users.find(u => u.username === username && u.password === password);
-    if (!user) return res.status(401).json({ "message": "Usuario y/o contraseña incorrectas" });
-    const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '1d' });
-    res.json({
-        ...omitPassword(user),
-        token
-    });
+        if (!user) {
+            let response = new Response(401, { error: "Usuario y/o contraseña incorrectas" }, "fail");
+            return res.status(401).json(response);
+        }
+
+        const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '1d' });
+        let response = new Response(200, { usuario: user.toJSON(), token: token }, "success");
+        res.json(response);
+
+    } catch (e) {
+        let response = new Response(500, { error: e.message }, "fail");
+        res.status(500).json(response);
+    }
+
+
 }
 
 register = async(req, res) => {
@@ -55,10 +72,6 @@ register = async(req, res) => {
 
 }
 
-omitPassword = (user) => {
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
-}
 
 module.exports = {
     register,

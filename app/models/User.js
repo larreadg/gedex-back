@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('config/db');
-const shajs = require('sha.js')
+const shajs = require('sha.js');
 
 class Usuario extends Model {
     obtenerNombre() {
