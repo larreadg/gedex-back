@@ -1,4 +1,4 @@
-const Usuario = require('app/models/User');
+const Usuario = require('app/models/Usuario');
 const Rol = require('app/models/Rol');
 const { Cliente, ClienteDireccion } = require('app/models/Cliente');
 
@@ -23,5 +23,28 @@ Cliente.hasOne(ClienteDireccion, {
 ClienteDireccion.belongsTo(Cliente, {
     foreignKey: {
         name: 'cliente_id'
+    }
+});
+
+// Añade createdBy, updatedBy
+Usuario.hasMany(Cliente, {
+    foreignKey: {
+        name: 'createdBy'
+    }
+});
+Cliente.belongsTo(Usuario, {
+    foreignKey: {
+        name: 'createdBy'
+    }
+});
+
+Usuario.hasMany(Cliente, {
+    foreignKey: {
+        name: 'updatedBy'
+    }
+});
+Cliente.belongsTo(Usuario, {
+    foreignKey: {
+        name: 'updatedBy'
     }
 });

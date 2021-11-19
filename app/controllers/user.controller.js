@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
 const { validationResult } = require('express-validator');
-const Usuario = require('app/models/User');
+const Usuario = require('app/models/Usuario');
 const Rol = require('app/models/Rol');
 const Response = require('app/helpers/response');
 const shajs = require('sha.js');
